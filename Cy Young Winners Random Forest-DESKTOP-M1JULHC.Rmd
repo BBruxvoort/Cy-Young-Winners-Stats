@@ -1,0 +1,80 @@
+---
+title: "Cy Young Winners Random Forest"
+author: "Brian Bruxvoort"
+date: "2023-07-06"
+output: pdf_document
+---
+
+```{r}
+library(tidyverse)
+library(randomForest)
+library(rpart)
+library(rpart.plot)
+library(Metrics)
+library(readxl)
+library(caret)
+library(leaps)
+```
+
+```{r}
+library(readxl)
+pitchers <- read_excel("C:/Users/brian_0n/OneDrive/Documents/Baseball Stats Projects/Cy Young Winners Stats.xlsx")
+View(pitchers)  
+```
+
+```{r}
+rf.x <- pitchers %>% select(-W)
+rf.y <- pitchers$W
+tuneRF(x=rf.x, y=rf.y, stepFactor=1.5, improve=0)
+```
+
+```{r}
+fit.rf <- randomForest(x=rf.x, y=rf.y, ntree=50)
+importance(fit.rf)
+varImpPlot(fit.rf, n.var=20)
+```
+
+```{r}
+rf.x2 <- pitchers %>% select(-ERA)
+rf.y2 <- pitchers$ERA
+tuneRF(x=rf.x2, y=rf.y2, stepFactor=1.5, improve=0)
+```
+
+```{r}
+fit.rf2 <- randomForest(x=rf.x2, y=rf.y2, ntree=50)
+importance(fit.rf2)
+varImpPlot(fit.rf2, n.var=20)
+```
+
+```{r}
+rf.x3 <- pitchers %>% select(-IP)
+rf.y3 <- pitchers$IP
+tuneRF(x=rf.x3, y=rf.y3, stepFactor=1.5, improve=0)
+```
+
+```{r}
+fit.rf3 <- randomForest(x=rf.x3, y=rf.y3, ntree=50)
+importance(fit.rf3)
+varImpPlot(fit.rf3, n.var=20)
+```
+
+```{r}
+pitchers2 <- pitchers %>% select(-Name, -Team, -League, -Year)
+lmW = lm(W~., data = pitchers2)
+summary(lmW)
+View(pitchers2)
+```
+
+```{r}
+models <- regsubsets(W~., data = pitchers2, nvmax=25)
+summary(models)
+```
+
+
+```{r}
+
+```
+
+
+
+
